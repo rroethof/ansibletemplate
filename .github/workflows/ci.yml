@@ -1,9 +1,16 @@
 ---
-name: CI
-'on':
-  pull_request:
+name: Ansible Template CI Build
+
+on:             # yamllint disable-line rule:truthy
   push:
     branches:
+      - master
+      - dev
+  pull_request:
+    branches:
+      - master
+      - dev
+
 
 defaults:
   run:
@@ -39,7 +46,7 @@ jobs:
       matrix:
         distro:
           - rockylinux8
-          - debian11
+          - debian12
 
     steps:
       - name: Check out the codebase.
