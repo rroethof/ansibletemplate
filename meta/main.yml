@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Jou naam hier
+  namespace: rroethof
+  role_name: ansibletemplate
+  description: Jou omschrijving hier
+  company: rroethof
+
+  issue_tracker_url: https://github.com/rroethof/ansibletemplate/issues
+
+  license: MIT
+
+  min_ansible_version: 2.1
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+        - 9
+    - name: Debian
+      versions:
+        - bookworm
+
+  galaxy_tags: []
+
+dependencies: []
