@@ -5,11 +5,15 @@
 # See: https://github.com/marketplace/actions/publish-ansible-role-to-galaxy
 # See: https://github.com/ansible/galaxy/issues/46
 
-name: Release
-'on':
+name: Ansible Template CI Release to Ansible Galaxy
+
+on:
   push:
-    tags:
-      - '*'
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 defaults:
   run:
@@ -22,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'rroethof.ansibletemplate'
 

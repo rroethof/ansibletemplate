@@ -10,7 +10,9 @@ on:             # yamllint disable-line rule:truthy
     branches:
       - master
       - dev
-
+  # At 04:56 on Monday
+  schedule:
+    - cron: '56 4 * * 1'
 
 defaults:
   run:
@@ -18,26 +20,25 @@ defaults:
 
 jobs:
 
+  # lint job
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    env:
+      PY_COLORS: 'true'
+      ANSIBLE_FORCE_COLOR: 'true'
+
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'rroethof.ansibletemplate'
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install test dependencies.
-        run: pip3 install yamllint ansible-lint
-
-      - name: Lint code.
-        run: |
-          yamllint .
+      - name: Lint Code Base
+        uses: github/super-linter/slim@v4
+        env:
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   molecule:
     name: Molecule
@@ -47,24 +48,22 @@ jobs:
         distro:
           - rockylinux8
           - debian12
+          - ubuntu-latest
+    env:
+      PY_COLORS: 'true'
+      ANSIBLE_FORCE_COLOR: 'true'
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'rroethof.ansibletemplate'
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+      - name: Set up Ansible & Molecule in a Python venv
+        run: |
+          "${GITHUB_WORKSPACE}/scripts/setup-local-ansible.sh"
 
-      - name: Install test dependencies.
-        run: pip3 install ansible ansible-lint molecule[docker] docker
-
-      - name: Run Molecule tests.
-        run: molecule test
-        env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
-          MOLECULE_DISTRO: ${{ matrix.distro }}
+      - name: Test with molecule
+        run: |
+          source "${GITHUB_WORKSPACE}/.venv/bin/activate"
+          molecule test --scenario-name docker
