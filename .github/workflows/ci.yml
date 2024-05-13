@@ -52,7 +52,7 @@ jobs:
     env:
       PY_COLORS: 'true'
       ANSIBLE_FORCE_COLOR: 'true'
-
+  
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v3
